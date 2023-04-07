@@ -1,0 +1,15 @@
+{
+  "name": "json-2-type",
+  "version": "1.0.0",
+  "description": "Convert JSON objects into Typescript type definations",
+  "main": "src/index.ts",
+  "author": "Damilola Jerugba",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4"
+  }
+}
