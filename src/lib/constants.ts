@@ -1,0 +1,1 @@
+export const TYPE_DEFINATION_PREFIX = '$type$';

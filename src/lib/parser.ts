@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import { containsNumerical } from "../regex";
+import { capitalizeString } from "./util";
+import { TYPE_DEFINATION_PREFIX } from "./constants";
 
 
 type TypeOf =
@@ -30,8 +32,13 @@ export const objectToType = (
         if (value === null) {
           result[key] = "null";
         } else {
-          // recursively call objectToType
-          result[key] = objectToType(value);
+          if (Array.isArray(value)) {
+            // TODO: handle array functionity
+          } else {
+            // recursively call objectToType
+            result[key] = capitalizeString(key) as TypeOf;
+            result[TYPE_DEFINATION_PREFIX + capitalizeString(key)] = objectToType(value);
+          }
         }
         break;
       case "string":
@@ -50,3 +57,4 @@ export const objectToType = (
 
   return result;
 };
+

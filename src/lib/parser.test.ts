@@ -65,7 +65,8 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      depth2: {
+      depth2: "Depth2",
+      "$type$Depth2": {
         name: "string",
         age: "number",
         married: "boolean",
@@ -83,13 +84,15 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      depth2: {
+      depth2: "Depth2",
+      "$type$Depth2": {
         name: "string",
         age: "number",
         married: "boolean",
         kids: "null",
         birthday: "date",
-        depth3: {
+        depth3: "Depth3",
+        "$type$Depth3": {
           name: "string",
           age: "number",
           married: "boolean",
