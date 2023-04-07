@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { containsNumerical } from "../regex";
 import { capitalizeString } from "./util";
-import { TYPE_DEFINATION_PREFIX } from "./constants";
+import { TYPE_DEFINATION_PREFIX } from "../constants";
 
 
 type TypeOf =
