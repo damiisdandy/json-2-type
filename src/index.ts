@@ -8,7 +8,7 @@ const DEPTH_2 = './mocks/depth-2.json';
 
 function main() {
   (async () => {
-    const data = await readFile(DEPTH_1);
+    const data = await readFile(DEPTH_2);
     console.log(objectToType(data), data)
   })()
 }

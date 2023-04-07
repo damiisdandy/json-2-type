@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { containsNumerical } from "../regex";
 
+
 type TypeOf =
   | "string"
   | "number"
@@ -11,7 +12,8 @@ type TypeOf =
   | "object"
   | "function"
   | "null"
-  | "date";
+  | "date"
+  | Record<string, any>;
 
 /**
  * ‘objectToType’ takes an object and returns a new object with its value types
@@ -23,17 +25,26 @@ export const objectToType = (
 ): Record<string, TypeOf> => {
   const result: Record<string, TypeOf> = {};
   Object.entries(obj).forEach(([key, value]) => {
-    if (typeof value === "string") {
-      // check if value is a date and does not contain only numerical characters
-      // "123456" can be parsed a valid date
-      if (!containsNumerical(value) && dayjs(value).isValid()) {
-        result[key] = "date";
-      } else {
-        result[key] = "string";
-      }
-    } else {
-      // typeof null === 'object' so we need to check for null first
-      result[key] = value === null ? "null" : typeof value;
+    switch (typeof value) {
+      case "object":
+        if (value === null) {
+          result[key] = "null";
+        } else {
+          // recursively call objectToType
+          result[key] = objectToType(value);
+        }
+        break;
+      case "string":
+        // check if value is a date and does not contain only numerical characters
+        // "123456" can be parsed a valid date
+        if (!containsNumerical(value) && dayjs(value).isValid()) {
+          result[key] = "date";
+        } else {
+          result[key] = "string";
+        }
+        break;
+      default:
+        result[key] = typeof value;
     }
   });
 
