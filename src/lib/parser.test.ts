@@ -1,4 +1,4 @@
-import { objectToType } from "./parser";
+import { objectToType, valueToType } from "./parser";
 
 const DEPTH_1 = {
   name: "John",
@@ -44,6 +44,33 @@ const DEPTH_3 = {
     }
   }
 }
+
+describe("valueToType - should return correct types", () => {
+  test("string", () => {
+    const result = valueToType("John");
+    expect(result).toBe("string");
+  });
+
+  test("number", () => {
+    const result = valueToType(30);
+    expect(result).toBe("number");
+  });
+
+  test("boolean", () => {
+    const result = valueToType(true);
+    expect(result).toBe("boolean");
+  });
+
+  test("null", () => {
+    const result = valueToType(null);
+    expect(result).toBe("null");
+  });
+
+  test("date", () => {
+    const result = valueToType("1990-10-10");
+    expect(result).toBe("date");
+  });
+})
 
 describe("objectToType - should return objects with correct types", () => {
   test("depth 1", () => {
