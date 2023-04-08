@@ -39,7 +39,7 @@ export const valueToType = (value: unknown, key: string = ""): TypeOf => {
       } else if (Array.isArray(value)) {
         return arrayToType(key, value);
       } else {
-        return objectToType(value);
+        return objectToType(value, key);
       }
     case "string":
       // Typescript can't detect the conditonal when we use switch case
@@ -59,7 +59,8 @@ export const valueToType = (value: unknown, key: string = ""): TypeOf => {
  * @returns `Record<string, TypeOf>`
  */
 export const objectToType = (
-  obj: Record<string, any> | Array<any>
+  obj: Record<string, any> | Array<any>,
+  key?: string
 ): Record<string, TypeOf> => {
   const result: Record<string, TypeOf> = {};
   const objectEntries = Object.entries(obj);
@@ -98,7 +99,11 @@ export const objectToType = (
       }
     }
   }
-  return result;
+  return key
+    ? {
+        [key]: result,
+      }
+    : result;
 };
 
 /**
@@ -109,9 +114,15 @@ export const objectToType = (
  */
 export const arrayToType = (
   key: string,
-  arr: unknown[]
+  arr: unknown[],
+  index?: number
 ): ArrayToTypeReturnType => {
-  const typeName = TYPE_DEFINATION_PREFIX + capitalizeString(key);
+  const typeName =
+    TYPE_DEFINATION_PREFIX +
+    capitalizeString(key) +
+    (index ? `Type${index}` : "");
+  // typeObjects that are deeply nested e.g an object within a nested array
+  const miscTypeObjects: TypeOf = {};
 
   if (arr.length === 0) {
     return {
@@ -130,13 +141,21 @@ export const arrayToType = (
     const valueType = valueToType(value);
     if (isPureObject(value)) {
       // push its genereated type e.g Example
-      typeDefination.push(capitalizeString(key) as string);
+      typeDefination.push(capitalizeString(key));
       // merge all objects into one with the key as an arrays of its types
       compressObjects(typeObjectPure, value as Object, valueToType);
     } else if (Array.isArray(value)) {
-      const arrayToTypeResult = arrayToType(key, value);
-      typeDefination.push(arrayToTypeResult.typeDefination);
-      typeObject[TYPE_DEFINATION_PREFIX + key] = [arrayToTypeResult.typeObject];
+      const index = i + 1;
+      const capitalizedKey = capitalizeString(key);
+      const arrayToTypeResult = arrayToType(key, value, index);
+      typeDefination.push(
+        arrayToTypeResult.typeDefination.replace(
+          capitalizedKey,
+          `${capitalizedKey}Type${index}`
+        )
+      );
+      Object.assign(miscTypeObjects, arrayToTypeResult.typeObject);
+      // typeObject[TYPE_DEFINATION_PREFIX + key] = [arrayToTypeResult.typeObject];
       // TODO handle nested arrays and its type definations
     } else {
       typeDefination.push(valueType as string);
@@ -150,7 +169,6 @@ export const arrayToType = (
     .join(",")})`;
 
   // convert typeObjectPure to TypeOf
-
   const typeObjectPureEntries = Object.entries(typeObjectPure);
   for (let i = 0; i < typeObjectPureEntries.length; i++) {
     const [key, values] = typeObjectPureEntries[i];
@@ -178,11 +196,11 @@ export const arrayToType = (
       .sort()
       .join(",") as TypeOf;
   }
-
   return {
     typeDefination: typeDefinationString,
     typeObject: {
       [typeName]: typeObject,
+      ...miscTypeObjects,
     },
   };
 };

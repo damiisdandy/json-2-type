@@ -6,9 +6,11 @@ import {
   DEPTH_1_WITH_EMPTY_ARRAY,
   DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY,
   DEPTH_1_WITH_ONLY_MULTIPLE_OBJECTS_IN_ARRAY,
+  DEPTH_1_WITH_TWO_NESTED_ARRAYS_AND_AN_OBJECT,
   DEPTH_2,
   DEPTH_3,
   DEPTH_4_WITH_ARRAYS,
+  NESTED_ARRAY_WITH_OBJECT,
   TYPE_DEFINATION_PREFIX,
 } from "../constants";
 import { arrayToType, objectToType, valueToType } from "./parser";
@@ -232,6 +234,25 @@ describe("objectToType - should return objects with correct types", () => {
       },
     });
   });
+
+  test("depth 1 with an array of nested arrays and an object", () => {
+    expect(objectToType(DEPTH_1_WITH_TWO_NESTED_ARRAYS_AND_AN_OBJECT)).toEqual({
+      name: "string",
+      nestedArray: `${ARRAY_TYPE_PREFIX}(${ARRAY_TYPE_PREFIX}(NestedArrayType1),${ARRAY_TYPE_PREFIX}(NestedArrayType2),NestedArray)`,
+      [TYPE_DEFINATION_PREFIX + "NestedArray"]: {
+        [TYPE_DEFINATION_PREFIX + "C"]: {
+          d: "string",
+        },
+        c: "C",
+      },
+      [TYPE_DEFINATION_PREFIX + "NestedArrayType1"]: {
+        a: "string",
+      },
+      [TYPE_DEFINATION_PREFIX + "NestedArrayType2"]: {
+        b: "string",
+      },
+    });
+  });
 });
 
 describe("arrayToType - should return correct array types", () => {
@@ -259,22 +280,16 @@ describe("arrayToType - should return correct array types", () => {
     );
   });
   test("nested array with object", () => {
-    expect(
-      arrayToType("example", [
-        null,
-        2,
-        "a",
-        [
-          null,
-          2,
-          "a",
-          {
-            a: "example",
-          },
-        ],
-      ]).typeDefination
-    ).toBe(
-      `${ARRAY_TYPE_PREFIX}(${ARRAY_TYPE_PREFIX}(Example,null,number,string),null,number,string)`
+    const result = arrayToType("example", NESTED_ARRAY_WITH_OBJECT);
+    expect(result.typeDefination).toBe(
+      `${ARRAY_TYPE_PREFIX}(${ARRAY_TYPE_PREFIX}(ExampleType${NESTED_ARRAY_WITH_OBJECT.length},null,number,string),null,number,string)`
+    );
+    expect(result.typeObject).toEqual(
+      expect.objectContaining({
+        [`$type$ExampleType${NESTED_ARRAY_WITH_OBJECT.length}`]: {
+          a: "string",
+        },
+      })
     );
   });
 });

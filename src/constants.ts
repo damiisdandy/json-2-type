@@ -26,6 +26,22 @@ export const DEPTH_1_WITH_ARRAY = {
   randomArray: ["Ben", 13, null, '2012-10-11']
 };
 
+export const DEPTH_1_WITH_TWO_NESTED_ARRAYS_AND_AN_OBJECT = {
+  name: "john",
+  nestedArray: [
+    [{
+      a: "string"
+    }],
+    [{
+      b: "string"
+    }],
+    {
+      c: {
+        d: "string"
+      }
+    }]
+}
+
 export const DEPTH_1_WITH_EMPTY_ARRAY = {
   name: "John",
   age: 30,
@@ -129,3 +145,17 @@ export const DEPTH_4_WITH_ARRAYS = {
     }
   }
 }
+
+export const NESTED_ARRAY_WITH_OBJECT = [
+  null,
+  2,
+  "a",
+  [
+    null,
+    2,
+    "a",
+    {
+      a: "example",
+    },
+  ],
+]
