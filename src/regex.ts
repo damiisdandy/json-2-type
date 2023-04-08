@@ -1,9 +1,11 @@
+import { ARRAY_TYPE_PREFIX } from "./constants";
+
 const numericalRegex = /^\d+$/;
 
 /**
- * ‘containsNumerical’ checks if a string contains only numerical characters.
+ * checks if a string contains only numerical characters.
  * @param str 
- * @returns “boolean”
+ * @returns `boolean`
  */
 export const containsNumerical = (str: string): boolean => {
   return numericalRegex.test(str);

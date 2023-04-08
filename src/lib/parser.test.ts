@@ -1,4 +1,5 @@
-import { objectToType, valueToType } from "./parser";
+import { ARRAY_TYPE_PREFIX } from "../constants";
+import { arrayToType, objectToType, valueToType } from "./parser";
 
 const DEPTH_1 = {
   name: "John",
@@ -6,6 +7,15 @@ const DEPTH_1 = {
   married: true,
   kids: null,
   birthday: "1990-10-10",
+};
+
+const DEPTH_1_WITH_ARRAY = {
+  name: "John",
+  age: 30,
+  married: true,
+  kids: null,
+  birthday: "1990-10-10",
+  randomArray: ["Ben", 13, null, '2012-10-11']
 };
 
 const DEPTH_2 = {
@@ -129,4 +139,26 @@ describe("objectToType - should return objects with correct types", () => {
       }
     });
   });
+
+  test("depth 1 with array", () => {
+    const result = objectToType(DEPTH_1_WITH_ARRAY);
+    expect(result).toEqual({
+      name: "string",
+      age: "number",
+      married: "boolean",
+      kids: "null",
+      birthday: "date",
+      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,date"
+    });
+  });
 });
+
+describe('arrayToType - should return correct array types', () => {
+  test('singular type', () => {
+    expect(arrayToType("example", ["a", "b", "c"]).typeDefination).toBe(ARRAY_TYPE_PREFIX + "string")
+  })
+  test('multiple types', () => {
+    expect(arrayToType("example", [1, "2", null, true, false, undefined]).typeDefination)
+      .toBe(ARRAY_TYPE_PREFIX + "number,string,null,boolean,undefined")
+  })
+})
