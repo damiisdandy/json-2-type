@@ -50,3 +50,12 @@ export const compressObjects = (
     }
   }
 };
+
+/**
+ * Check if an object is empty e.g {}
+ * @param obj
+ * @returns `boolean`
+ */
+export const isObjectEmpty = (obj: Object) => {
+  return Object.keys(obj).length === 0;
+};

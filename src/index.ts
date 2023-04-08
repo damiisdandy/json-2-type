@@ -10,7 +10,7 @@ const DEPTH_2 = './mocks/depth-2.json';
 function main() {
   (async () => {
     // const data = await readFile(DEPTH_2);
-    console.log(arrayToType("example", NESTED_ARRAY_WITH_OBJECT))
+    // console.log(arrayToType("example", NESTED_ARRAY_WITH_OBJECT))
     console.log(JSON.stringify(objectToType({}), null, 4))
   })()
 }

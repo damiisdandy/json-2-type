@@ -2,6 +2,7 @@ import {
   capitalizeString,
   compressObjects,
   isDate,
+  isObjectEmpty,
   isPureObject,
 } from "./util";
 import type { Nullable } from "./util";
@@ -62,6 +63,11 @@ export const objectToType = (
   obj: Record<string, any> | Array<any>,
   key?: string
 ): Record<string, TypeOf> => {
+  if (isObjectEmpty(obj) && isPureObject(obj)) {
+    throw new Error(
+      `Cannot generate type definations from an empty object: {}`
+    );
+  }
   const result: Record<string, TypeOf> = {};
   const objectEntries = Object.entries(obj);
   // for loop is faster than forEach
@@ -88,8 +94,7 @@ export const objectToType = (
             valueToTypeResult.typeObject
           )[0];
           if (
-            Object.keys(valueToTypeResult.typeObject[arrayTypePrefixName])
-              .length > 0
+            !isObjectEmpty(valueToTypeResult.typeObject[arrayTypePrefixName])
           ) {
             Object.assign(result, valueToTypeResult.typeObject);
           }
