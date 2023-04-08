@@ -1,10 +1,12 @@
 import { capitalizeString, isDate, isPureObject } from "./util";
 import { ARRAY_TYPE_PREFIX, TYPE_DEFINATION_PREFIX } from "../constants";
 
+
 type ArrayToTypeReturnType = {
   typeDefination: string;
   typeObjects: TypeOf[];
-};
+}
+
 
 type TypeOf =
   | "string"
@@ -45,7 +47,7 @@ export const valueToType = (value: unknown, key: string = ""): TypeOf => {
     default:
       return typeof value;
   }
-};
+}
 
 /**
  * takes an object and returns a new object with its value types
@@ -69,8 +71,7 @@ export const objectToType = (
       //    }
       //  }
       result[key] = capitalizeString(key) as TypeOf;
-      result[TYPE_DEFINATION_PREFIX + capitalizeString(key)] =
-        objectToType(value);
+      result[TYPE_DEFINATION_PREFIX + capitalizeString(key)] = objectToType(value);
     } else {
       const valueToTypeResult = valueToType(value, key);
       if (typeof valueToTypeResult !== "string") {
@@ -90,21 +91,19 @@ export const objectToType = (
   return result;
 };
 
+
 /**
  * types an array and returns its type or types separated by commas
  * @param key `string`
- * @param arr
+ * @param arr 
  * @returns `ArrayToTypeReturnType`
  */
-export const arrayToType = (
-  key: string,
-  arr: unknown[]
-): ArrayToTypeReturnType => {
+export const arrayToType = (key: string, arr: unknown[]): ArrayToTypeReturnType => {
   if (!arr.length) {
     return {
       typeDefination: ARRAY_TYPE_PREFIX + "unknown",
       typeObjects: [],
-    };
+    }
   }
   const typeDefination: string[] = [];
   const typeObjects: TypeOf[] = [];
@@ -123,11 +122,10 @@ export const arrayToType = (
     }
   }
   // remove duplicates then join with comma
-  const typeDefinationString =
-    ARRAY_TYPE_PREFIX + Array.from(new Set(typeDefination)).join(",");
+  const typeDefinationString = ARRAY_TYPE_PREFIX + Array.from(new Set(typeDefination)).sort().join(",");
 
   return {
     typeDefination: typeDefinationString,
     typeObjects: typeObjects,
   };
-};
+}

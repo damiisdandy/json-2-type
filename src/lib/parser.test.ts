@@ -103,7 +103,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,date",
+      randomArray: ARRAY_TYPE_PREFIX + "date,null,number,string",
     });
   });
 
@@ -115,7 +115,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,RandomArray",
+      randomArray: ARRAY_TYPE_PREFIX + "RandomArray,null,number,string",
       [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
         name: "string",
         age: "number",
@@ -134,7 +134,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,RandomArray",
+      randomArray: ARRAY_TYPE_PREFIX + "RandomArray,null,number,string",
       [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
         name: "string",
         age: "number",
@@ -157,7 +157,7 @@ describe("arrayToType - should return correct array types", () => {
     expect(
       arrayToType("example", [1, "2", null, true, false, undefined])
         .typeDefination
-    ).toBe(ARRAY_TYPE_PREFIX + "number,string,null,boolean,undefined");
+    ).toBe(ARRAY_TYPE_PREFIX + "boolean,null,number,string,undefined");
   });
   test("empty array", () => {
     expect(arrayToType("example", []).typeDefination).toBe(
