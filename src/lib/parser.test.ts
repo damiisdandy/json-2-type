@@ -126,7 +126,6 @@ describe("objectToType - should return objects with correct types", () => {
     });
   });
 
-
   test("depth 1 with multiple objects in array", () => {
     const result = objectToType(DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY);
     expect(result).toEqual({
