@@ -10,8 +10,12 @@ function main() {
   (async () => {
     // const data = await readFile(DEPTH_2);
     const data = {
-      name: "damilola",
-      values: ["damilola", 3, undefined, null]
+      name: "John",
+      age: 30,
+      married: true,
+      kids: null,
+      birthday: "1990-10-10",
+      randomArray: ["Ben", 13, null, '2012-10-11']
     }
     console.log(objectToType(data), data)
   })()

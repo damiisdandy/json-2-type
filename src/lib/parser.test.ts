@@ -1,59 +1,14 @@
-import { ARRAY_TYPE_PREFIX } from "../constants";
+import {
+  ARRAY_TYPE_PREFIX,
+  DEPTH_1,
+  DEPTH_1_WITH_AN_OBJECT_IN_ARRAY,
+  DEPTH_1_WITH_ARRAY,
+  DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY,
+  DEPTH_2,
+  DEPTH_3,
+  TYPE_DEFINATION_PREFIX,
+} from "../constants";
 import { arrayToType, objectToType, valueToType } from "./parser";
-
-const DEPTH_1 = {
-  name: "John",
-  age: 30,
-  married: true,
-  kids: null,
-  birthday: "1990-10-10",
-};
-
-const DEPTH_1_WITH_ARRAY = {
-  name: "John",
-  age: 30,
-  married: true,
-  kids: null,
-  birthday: "1990-10-10",
-  randomArray: ["Ben", 13, null, '2012-10-11']
-};
-
-const DEPTH_2 = {
-  name: "John",
-  age: 30,
-  married: true,
-  kids: null,
-  birthday: "1990-10-10",
-  depth2: {
-    name: "John",
-    age: 30,
-    married: true,
-    kids: null,
-    birthday: "1990-10-10",
-  }
-}
-
-const DEPTH_3 = {
-  name: "John",
-  age: 30,
-  married: true,
-  kids: null,
-  birthday: "1990-10-10",
-  depth2: {
-    name: "John",
-    age: 30,
-    married: true,
-    kids: null,
-    birthday: "1990-10-10",
-    depth3: {
-      name: "John",
-      age: 30,
-      married: true,
-      kids: null,
-      birthday: "1990-10-10",
-    }
-  }
-}
 
 describe("valueToType - should return correct types", () => {
   test("string", () => {
@@ -80,7 +35,7 @@ describe("valueToType - should return correct types", () => {
     const result = valueToType("1990-10-10");
     expect(result).toBe("date");
   });
-})
+});
 
 describe("objectToType - should return objects with correct types", () => {
   test("depth 1", () => {
@@ -103,13 +58,13 @@ describe("objectToType - should return objects with correct types", () => {
       kids: "null",
       birthday: "date",
       depth2: "Depth2",
-      "$type$Depth2": {
+      [TYPE_DEFINATION_PREFIX + "Depth2"]: {
         name: "string",
         age: "number",
         married: "boolean",
         kids: "null",
         birthday: "date",
-      }
+      },
     });
   });
 
@@ -122,21 +77,21 @@ describe("objectToType - should return objects with correct types", () => {
       kids: "null",
       birthday: "date",
       depth2: "Depth2",
-      "$type$Depth2": {
+      [TYPE_DEFINATION_PREFIX + "Depth2"]: {
         name: "string",
         age: "number",
         married: "boolean",
         kids: "null",
         birthday: "date",
         depth3: "Depth3",
-        "$type$Depth3": {
+        [TYPE_DEFINATION_PREFIX + "Depth3"]: {
           name: "string",
           age: "number",
           married: "boolean",
           kids: "null",
           birthday: "date",
-        }
-      }
+        },
+      },
     });
   });
 
@@ -148,17 +103,66 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,date"
+      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,date",
+    });
+  });
+
+  test("depth 1 with an object in array", () => {
+    const result = objectToType(DEPTH_1_WITH_AN_OBJECT_IN_ARRAY);
+    expect(result).toEqual({
+      name: "string",
+      age: "number",
+      married: "boolean",
+      kids: "null",
+      birthday: "date",
+      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,RandomArray",
+      [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
+        name: "string",
+        age: "number",
+        married: "boolean",
+        kids: "null",
+        birthday: "date",
+      },
+    });
+  });
+
+
+  test("depth 1 with multiple objects in array", () => {
+    const result = objectToType(DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY);
+    expect(result).toEqual({
+      name: "string",
+      age: "number",
+      married: "boolean",
+      kids: "null",
+      birthday: "date",
+      randomArray: ARRAY_TYPE_PREFIX + "string,number,null,RandomArray",
+      [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
+        name: "string",
+        age: "number",
+        married: "boolean,undefined",
+        isFruit: "boolean,undefined",
+        kids: "null,undefined",
+        birthday: "date,number",
+      },
     });
   });
 });
 
-describe('arrayToType - should return correct array types', () => {
-  test('singular type', () => {
-    expect(arrayToType("example", ["a", "b", "c"]).typeDefination).toBe(ARRAY_TYPE_PREFIX + "string")
-  })
-  test('multiple types', () => {
-    expect(arrayToType("example", [1, "2", null, true, false, undefined]).typeDefination)
-      .toBe(ARRAY_TYPE_PREFIX + "number,string,null,boolean,undefined")
-  })
-})
+describe("arrayToType - should return correct array types", () => {
+  test("singular type", () => {
+    expect(arrayToType("example", ["a", "b", "c"]).typeDefination).toBe(
+      ARRAY_TYPE_PREFIX + "string"
+    );
+  });
+  test("multiple types", () => {
+    expect(
+      arrayToType("example", [1, "2", null, true, false, undefined])
+        .typeDefination
+    ).toBe(ARRAY_TYPE_PREFIX + "number,string,null,boolean,undefined");
+  });
+  test("empty array", () => {
+    expect(arrayToType("example", []).typeDefination).toBe(
+      ARRAY_TYPE_PREFIX + "unknown"
+    );
+  });
+});

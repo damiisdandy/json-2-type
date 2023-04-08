@@ -1,5 +1,5 @@
-import { capitalizeString } from './util';
+import { capitalizeString } from "./util";
 
-test('Should capitalized string', () => {
-  expect(capitalizeString('example')).toBe('Example');
-})
+test("Should capitalized string", () => {
+  expect(capitalizeString("example")).toBe("Example");
+});
