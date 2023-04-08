@@ -123,6 +123,7 @@ export const arrayToType = (
   }
   const typeDefination: string[] = [];
   const typeObjectPure: Record<string, (string | Record<string, any>)[]> = {};
+  const typeObject: TypeOf = {};
   // for loop is faster than reduce
   for (let i = 0; i < arr.length; i++) {
     const value = arr[i];
@@ -135,16 +136,21 @@ export const arrayToType = (
     } else if (Array.isArray(value)) {
       const arrayToTypeResult = arrayToType(key, value);
       typeDefination.push(arrayToTypeResult.typeDefination);
+      typeObject[TYPE_DEFINATION_PREFIX + key] = [arrayToTypeResult.typeObject];
       // TODO handle nested arrays and its type definations
     } else {
       typeDefination.push(valueType as string);
     }
   }
   // remove duplicates then join with comma
-  const typeDefinationString = `${ARRAY_TYPE_PREFIX}(${Array.from(new Set(typeDefination)).sort().join(",")})`;
+  const typeDefinationString = `${ARRAY_TYPE_PREFIX}(${Array.from(
+    new Set(typeDefination)
+  )
+    .sort()
+    .join(",")})`;
 
   // convert typeObjectPure to TypeOf
-  const typeObject: TypeOf = {};
+
   const typeObjectPureEntries = Object.entries(typeObjectPure);
   for (let i = 0; i < typeObjectPureEntries.length; i++) {
     const [key, values] = typeObjectPureEntries[i];

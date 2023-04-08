@@ -252,8 +252,29 @@ describe("arrayToType - should return correct array types", () => {
     );
   });
   test("nested array", () => {
-    expect(arrayToType("example", [null, 2, "a", [null, 2, "a"]]).typeDefination).toBe(
+    expect(
+      arrayToType("example", [null, 2, "a", [null, 2, "a"]]).typeDefination
+    ).toBe(
       `${ARRAY_TYPE_PREFIX}(${ARRAY_TYPE_PREFIX}(null,number,string),null,number,string)`
+    );
+  });
+  test("nested array with object", () => {
+    expect(
+      arrayToType("example", [
+        null,
+        2,
+        "a",
+        [
+          null,
+          2,
+          "a",
+          {
+            a: "example",
+          },
+        ],
+      ]).typeDefination
+    ).toBe(
+      `${ARRAY_TYPE_PREFIX}(${ARRAY_TYPE_PREFIX}(Example,null,number,string),null,number,string)`
     );
   });
 });

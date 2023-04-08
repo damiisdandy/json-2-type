@@ -12,9 +12,11 @@ function main() {
     // const data = await readFile(DEPTH_2);
     const data = {
       name: "john",
-      nestedArray: ["name", 12, 23, ["name", 12, 13]]
+      nestedArray: ["name", 12, 23, ["name", 12, {
+        a: "string",
+      }]]
     }
-    console.log(objectToType(data))
+    console.log(JSON.stringify(objectToType(data), null, 4))
   })()
 }
 
