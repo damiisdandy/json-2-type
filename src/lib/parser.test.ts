@@ -106,7 +106,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "date,null,number,string",
+      randomArray: ARRAY_TYPE_PREFIX + "(date,null,number,string)",
     });
   });
 
@@ -118,7 +118,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "unknown",
+      randomArray: ARRAY_TYPE_PREFIX + "(unknown)",
     });
   });
 
@@ -130,7 +130,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "RandomArray,null,number,string",
+      randomArray: ARRAY_TYPE_PREFIX + "(RandomArray,null,number,string)",
       [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
         name: "string",
         age: "number",
@@ -149,7 +149,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "RandomArray,null,number,string",
+      randomArray: ARRAY_TYPE_PREFIX + "(RandomArray,null,number,string)",
       [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
         name: "string",
         age: "number",
@@ -169,7 +169,7 @@ describe("objectToType - should return objects with correct types", () => {
       married: "boolean",
       kids: "null",
       birthday: "date",
-      randomArray: ARRAY_TYPE_PREFIX + "RandomArray",
+      randomArray: ARRAY_TYPE_PREFIX + "(RandomArray)",
       [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
         name: "string",
         age: "number",
@@ -196,7 +196,7 @@ describe("objectToType - should return objects with correct types", () => {
         married: "boolean",
         kids: "null",
         birthday: "date",
-        randomArray: "$array$RandomArray",
+        randomArray: ARRAY_TYPE_PREFIX + "(RandomArray)",
         $type$RandomArray: {
           name: "string",
           age: "number",
@@ -226,7 +226,7 @@ describe("objectToType - should return objects with correct types", () => {
             married: "boolean",
             kids: "null",
             birthday: "date",
-            randomArray1: "$array$date,null,number,string",
+            randomArray1: ARRAY_TYPE_PREFIX + "(date,null,number,string)",
           },
         },
       },
@@ -237,18 +237,23 @@ describe("objectToType - should return objects with correct types", () => {
 describe("arrayToType - should return correct array types", () => {
   test("singular type", () => {
     expect(arrayToType("example", ["a", "b", "c"]).typeDefination).toBe(
-      ARRAY_TYPE_PREFIX + "string"
+      ARRAY_TYPE_PREFIX + "(string)"
     );
   });
   test("multiple types", () => {
     expect(
       arrayToType("example", [1, "2", null, true, false, undefined])
         .typeDefination
-    ).toBe(ARRAY_TYPE_PREFIX + "boolean,null,number,string,undefined");
+    ).toBe(ARRAY_TYPE_PREFIX + "(boolean,null,number,string,undefined)");
   });
   test("empty array", () => {
     expect(arrayToType("example", []).typeDefination).toBe(
-      ARRAY_TYPE_PREFIX + "unknown"
+      ARRAY_TYPE_PREFIX + "(unknown)"
+    );
+  });
+  test("nested array", () => {
+    expect(arrayToType("example", [null, 2, "a", [null, 2, "a"]]).typeDefination).toBe(
+      `${ARRAY_TYPE_PREFIX}(${ARRAY_TYPE_PREFIX}(null,number,string),null,number,string)`
     );
   });
 });

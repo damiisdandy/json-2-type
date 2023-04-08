@@ -115,7 +115,7 @@ export const arrayToType = (
 
   if (arr.length === 0) {
     return {
-      typeDefination: ARRAY_TYPE_PREFIX + "unknown",
+      typeDefination: ARRAY_TYPE_PREFIX + "(unknown)",
       typeObject: {
         [typeName]: {},
       },
@@ -133,14 +133,15 @@ export const arrayToType = (
       // merge all objects into one with the key as an arrays of its types
       compressObjects(typeObjectPure, value as Object, valueToType);
     } else if (Array.isArray(value)) {
-      // TODO handle nested arrays
+      const arrayToTypeResult = arrayToType(key, value);
+      typeDefination.push(arrayToTypeResult.typeDefination);
+      // TODO handle nested arrays and its type definations
     } else {
       typeDefination.push(valueType as string);
     }
   }
   // remove duplicates then join with comma
-  const typeDefinationString =
-    ARRAY_TYPE_PREFIX + Array.from(new Set(typeDefination)).sort().join(",");
+  const typeDefinationString = `${ARRAY_TYPE_PREFIX}(${Array.from(new Set(typeDefination)).sort().join(",")})`;
 
   // convert typeObjectPure to TypeOf
   const typeObject: TypeOf = {};
