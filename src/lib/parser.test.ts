@@ -3,6 +3,7 @@ import {
   DEPTH_1,
   DEPTH_1_WITH_AN_OBJECT_IN_ARRAY,
   DEPTH_1_WITH_ARRAY,
+  DEPTH_1_WITH_EMPTY_ARRAY,
   DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY,
   DEPTH_2,
   DEPTH_3,
@@ -107,6 +108,18 @@ describe("objectToType - should return objects with correct types", () => {
     });
   });
 
+  test("depth 1 with an empty array", () => {
+    const result = objectToType(DEPTH_1_WITH_EMPTY_ARRAY);
+    expect(result).toEqual({
+      name: "string",
+      age: "number",
+      married: "boolean",
+      kids: "null",
+      birthday: "date",
+      randomArray: ARRAY_TYPE_PREFIX + "unknown",
+    });
+  });
+
   test("depth 1 with an object in array", () => {
     const result = objectToType(DEPTH_1_WITH_AN_OBJECT_IN_ARRAY);
     expect(result).toEqual({
@@ -139,9 +152,9 @@ describe("objectToType - should return objects with correct types", () => {
         name: "string",
         age: "number",
         married: "boolean,undefined",
-        isFruit: "boolean,undefined",
         kids: "null,undefined",
         birthday: "date,number",
+        isFruit: "boolean,undefined",
       },
     });
   });

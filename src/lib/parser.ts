@@ -1,12 +1,13 @@
-import { capitalizeString, isDate, isPureObject } from "./util";
+import { capitalizeString, compressObjects, isDate, isPureObject } from "./util";
+import type { Nullable } from './util';
 import { ARRAY_TYPE_PREFIX, TYPE_DEFINATION_PREFIX } from "../constants";
 
 type ArrayToTypeReturnType = {
   typeDefination: string;
-  typeObjects: TypeOf[];
+  typeObject: TypeOf;
 };
 
-type TypeOf =
+export type TypeOf =
   | "string"
   | "number"
   | "bigint"
@@ -76,10 +77,10 @@ export const objectToType = (
       if (typeof valueToTypeResult !== "string") {
         result[key] = valueToTypeResult.typeDefination;
         if (valueToTypeResult.typeDefination.startsWith(ARRAY_TYPE_PREFIX)) {
-          // also append the type objects
-          for (let i = 0; i < valueToTypeResult.typeObjects.length; i++) {
-            const typeObject = valueToTypeResult.typeObjects[i];
-            Object.assign(result, typeObject);
+          // also append the type object if its not empty
+          const arrayTypePrefixName = Object.keys(valueToTypeResult.typeObject)[0]
+          if (Object.keys(valueToTypeResult.typeObject[arrayTypePrefixName]).length > 0) {
+            Object.assign(result, valueToTypeResult.typeObject);
           }
         }
       } else {
@@ -100,25 +101,31 @@ export const arrayToType = (
   key: string,
   arr: unknown[]
 ): ArrayToTypeReturnType => {
-  if (!arr.length) {
+  const typeName = TYPE_DEFINATION_PREFIX + capitalizeString(key)
+
+  if (arr.length === 0) {
     return {
       typeDefination: ARRAY_TYPE_PREFIX + "unknown",
-      typeObjects: [],
+      typeObject: {
+        [typeName]: {},
+      },
     };
   }
   const typeDefination: string[] = [];
-  const typeObjects: TypeOf[] = [];
+  const typeObjectPure: Record<string, string[]> = {};
   // for loop is faster than reduce
   for (let i = 0; i < arr.length; i++) {
     const value = arr[i];
     const valueType = valueToType(value);
     if (isPureObject(value)) {
+      // push its genereated type e.g Example
       typeDefination.push(capitalizeString(key) as string);
-      // TODO: handle partial objects
-      typeObjects.push({
-        [`${TYPE_DEFINATION_PREFIX + capitalizeString(key)}`]: valueType,
-      });
-    } else {
+      // merge all objects into one with the key as an arrays of its types
+      compressObjects(typeObjectPure, value as Object, valueToType);
+    } else if (Array.isArray(value)) {
+      // TODO handle nested arrays
+    }
+    else {
       typeDefination.push(valueType as string);
     }
   }
@@ -126,8 +133,25 @@ export const arrayToType = (
   const typeDefinationString =
     ARRAY_TYPE_PREFIX + Array.from(new Set(typeDefination)).sort().join(",");
 
+  // convert typeObjectPure to TypeOf
+  const typeObject: TypeOf = {};
+  const typeObjectPureEntries = Object.entries(typeObjectPure);
+  for (let i = 0; i < typeObjectPureEntries.length; i++) {
+    const [key, value] = typeObjectPureEntries[i];
+    // check if some values are optional e.g example?: string
+    // meaning they do not exists in all objects within the array
+    if (arr.filter(isPureObject).length > 1 && value.length === 1) {
+      typeObject[key] = Array.from(new Set([value, 'undefined'])).sort().join(",") as TypeOf;
+    } else {
+      typeObject[key] = Array.from(new Set(value)).sort().join(",") as TypeOf;
+    }
+  }
+
+
   return {
     typeDefination: typeDefinationString,
-    typeObjects: typeObjects,
+    typeObject: {
+      [typeName]: typeObject,
+    },
   };
 };
