@@ -53,6 +53,15 @@ export const DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY = {
   randomArray: ["Ben", 13, null, DEPTH_1, PARTIAL_DEPTH_1]
 };
 
+export const DEPTH_1_WITH_ONLY_MULTIPLE_OBJECTS_IN_ARRAY = {
+  name: "John",
+  age: 30,
+  married: true,
+  kids: null,
+  birthday: "1990-10-10",
+  randomArray: [DEPTH_1, PARTIAL_DEPTH_1]
+};
+
 export const DEPTH_2 = {
   name: "John",
   age: 30,

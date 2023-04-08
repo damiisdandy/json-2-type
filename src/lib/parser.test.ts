@@ -5,6 +5,7 @@ import {
   DEPTH_1_WITH_ARRAY,
   DEPTH_1_WITH_EMPTY_ARRAY,
   DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY,
+  DEPTH_1_WITH_ONLY_MULTIPLE_OBJECTS_IN_ARRAY,
   DEPTH_2,
   DEPTH_3,
   TYPE_DEFINATION_PREFIX,
@@ -148,6 +149,26 @@ describe("objectToType - should return objects with correct types", () => {
       kids: "null",
       birthday: "date",
       randomArray: ARRAY_TYPE_PREFIX + "RandomArray,null,number,string",
+      [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
+        name: "string",
+        age: "number",
+        married: "boolean,undefined",
+        kids: "null,undefined",
+        birthday: "date,number",
+        isFruit: "boolean,undefined",
+      },
+    });
+  });
+
+  test("depth 1 with only multiple objects in array", () => {
+    const result = objectToType(DEPTH_1_WITH_ONLY_MULTIPLE_OBJECTS_IN_ARRAY);
+    expect(result).toEqual({
+      name: "string",
+      age: "number",
+      married: "boolean",
+      kids: "null",
+      birthday: "date",
+      randomArray: ARRAY_TYPE_PREFIX + "RandomArray",
       [TYPE_DEFINATION_PREFIX + "RandomArray"]: {
         name: "string",
         age: "number",

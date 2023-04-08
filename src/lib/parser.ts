@@ -1,5 +1,10 @@
-import { capitalizeString, compressObjects, isDate, isPureObject } from "./util";
-import type { Nullable } from './util';
+import {
+  capitalizeString,
+  compressObjects,
+  isDate,
+  isPureObject,
+} from "./util";
+import type { Nullable } from "./util";
 import { ARRAY_TYPE_PREFIX, TYPE_DEFINATION_PREFIX } from "../constants";
 
 type ArrayToTypeReturnType = {
@@ -78,8 +83,13 @@ export const objectToType = (
         result[key] = valueToTypeResult.typeDefination;
         if (valueToTypeResult.typeDefination.startsWith(ARRAY_TYPE_PREFIX)) {
           // also append the type object if its not empty
-          const arrayTypePrefixName = Object.keys(valueToTypeResult.typeObject)[0]
-          if (Object.keys(valueToTypeResult.typeObject[arrayTypePrefixName]).length > 0) {
+          const arrayTypePrefixName = Object.keys(
+            valueToTypeResult.typeObject
+          )[0];
+          if (
+            Object.keys(valueToTypeResult.typeObject[arrayTypePrefixName])
+              .length > 0
+          ) {
             Object.assign(result, valueToTypeResult.typeObject);
           }
         }
@@ -101,7 +111,7 @@ export const arrayToType = (
   key: string,
   arr: unknown[]
 ): ArrayToTypeReturnType => {
-  const typeName = TYPE_DEFINATION_PREFIX + capitalizeString(key)
+  const typeName = TYPE_DEFINATION_PREFIX + capitalizeString(key);
 
   if (arr.length === 0) {
     return {
@@ -124,8 +134,7 @@ export const arrayToType = (
       compressObjects(typeObjectPure, value as Object, valueToType);
     } else if (Array.isArray(value)) {
       // TODO handle nested arrays
-    }
-    else {
+    } else {
       typeDefination.push(valueType as string);
     }
   }
@@ -141,12 +150,13 @@ export const arrayToType = (
     // check if some values are optional e.g example?: string
     // meaning they do not exists in all objects within the array
     if (arr.filter(isPureObject).length > 1 && value.length === 1) {
-      typeObject[key] = Array.from(new Set([value, 'undefined'])).sort().join(",") as TypeOf;
+      typeObject[key] = Array.from(new Set([value, "undefined"]))
+        .sort()
+        .join(",") as TypeOf;
     } else {
       typeObject[key] = Array.from(new Set(value)).sort().join(",") as TypeOf;
     }
   }
-
 
   return {
     typeDefination: typeDefinationString,

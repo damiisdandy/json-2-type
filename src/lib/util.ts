@@ -35,7 +35,11 @@ export const isDate = (value: string): boolean => {
  * @param item `Record<string, any>`
  * @param valueParser A function you can use to parse the `item`'s value during merging
  */
-export const compressObjects = (finalObject: Record<string, any>, item: Record<string, any>, valueParser?: (...args: any[]) => any): void => {
+export const compressObjects = (
+  finalObject: Record<string, any>,
+  item: Record<string, any>,
+  valueParser?: (...args: any[]) => any
+): void => {
   const objectEntries = Object.entries(item);
   for (let i = 0; i < objectEntries.length; i++) {
     const [key, value] = objectEntries[i];
@@ -45,4 +49,4 @@ export const compressObjects = (finalObject: Record<string, any>, item: Record<s
       finalObject[key] = [valueParser ? valueParser(value) : value];
     }
   }
-} 
+};
