@@ -8,6 +8,7 @@ import {
   DEPTH_1_WITH_ONLY_MULTIPLE_OBJECTS_IN_ARRAY,
   DEPTH_2,
   DEPTH_3,
+  DEPTH_4_WITH_ARRAYS,
   TYPE_DEFINATION_PREFIX,
 } from "../constants";
 import { arrayToType, objectToType, valueToType } from "./parser";
@@ -176,6 +177,58 @@ describe("objectToType - should return objects with correct types", () => {
         kids: "null,undefined",
         birthday: "date,number",
         isFruit: "boolean,undefined",
+      },
+    });
+  });
+
+  test("depth 4 with arrays", () => {
+    const result = objectToType(DEPTH_4_WITH_ARRAYS);
+    expect(result).toEqual({
+      name: "string",
+      age: "number",
+      married: "boolean",
+      kids: "null",
+      birthday: "date",
+      depth2: "Depth2",
+      $type$Depth2: {
+        name: "string",
+        age: "number",
+        married: "boolean",
+        kids: "null",
+        birthday: "date",
+        randomArray: "$array$RandomArray",
+        $type$RandomArray: {
+          name: "string",
+          age: "number",
+          married: "boolean",
+          kids: "null",
+          birthday: "date",
+          depth2: "Depth2,undefined",
+          $type$Depth2: {
+            name: "string",
+            age: "number",
+            married: "boolean",
+            kids: "null",
+            birthday: "date",
+          },
+        },
+        depth3: "Depth3",
+        $type$Depth3: {
+          name: "string",
+          age: "number",
+          married: "boolean",
+          kids: "null",
+          birthday: "date",
+          depth4: "Depth4",
+          $type$Depth4: {
+            name: "string",
+            age: "number",
+            married: "boolean",
+            kids: "null",
+            birthday: "date",
+            randomArray1: "$array$date,null,number,string",
+          },
+        },
       },
     });
   });

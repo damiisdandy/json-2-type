@@ -122,7 +122,7 @@ export const arrayToType = (
     };
   }
   const typeDefination: string[] = [];
-  const typeObjectPure: Record<string, string[]> = {};
+  const typeObjectPure: Record<string, (string | Record<string, any>)[]> = {};
   // for loop is faster than reduce
   for (let i = 0; i < arr.length; i++) {
     const value = arr[i];
@@ -146,16 +146,30 @@ export const arrayToType = (
   const typeObject: TypeOf = {};
   const typeObjectPureEntries = Object.entries(typeObjectPure);
   for (let i = 0; i < typeObjectPureEntries.length; i++) {
-    const [key, value] = typeObjectPureEntries[i];
+    const [key, values] = typeObjectPureEntries[i];
+    const nonObjectTypeValues = values.filter(
+      (value) => typeof value === "string"
+    ) as string[];
+    const objectTypeValues = values.filter(
+      (value) => typeof value === "object"
+    ) as Record<string, any>;
+
+    const finalValues: string[] = [...nonObjectTypeValues];
     // check if some values are optional e.g example?: string
     // meaning they do not exists in all objects within the array
-    if (arr.filter(isPureObject).length > 1 && value.length === 1) {
-      typeObject[key] = Array.from(new Set([value, "undefined"]))
-        .sort()
-        .join(",") as TypeOf;
-    } else {
-      typeObject[key] = Array.from(new Set(value)).sort().join(",") as TypeOf;
+    if (arr.filter(isPureObject).length > 1 && values.length === 1) {
+      finalValues.push("undefined");
     }
+    for (let j = 0; j < objectTypeValues.length; j++) {
+      const objectKey = capitalizeString(key);
+      finalValues.push(objectKey);
+      const objectType = objectTypeValues[j];
+      typeObject[TYPE_DEFINATION_PREFIX + objectKey] = objectType;
+    }
+
+    typeObject[key] = Array.from(new Set(finalValues))
+      .sort()
+      .join(",") as TypeOf;
   }
 
   return {

@@ -98,3 +98,34 @@ export const DEPTH_3 = {
     }
   }
 }
+
+export const DEPTH_4_WITH_ARRAYS = {
+  name: "John",
+  age: 30,
+  married: true,
+  kids: null,
+  birthday: "1990-10-10",
+  depth2: {
+    name: "John",
+    age: 30,
+    married: true,
+    kids: null,
+    birthday: "1990-10-10",
+    randomArray: [DEPTH_1, DEPTH_2],
+    depth3: {
+      name: "John",
+      age: 30,
+      married: true,
+      kids: null,
+      birthday: "1990-10-10",
+      depth4: {
+        name: "John",
+        age: 30,
+        married: true,
+        kids: null,
+        birthday: "1990-10-10",
+        randomArray1: ["Ben", 13, null, '2012-10-11']
+      }
+    }
+  }
+}

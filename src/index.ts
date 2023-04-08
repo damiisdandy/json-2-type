@@ -1,4 +1,4 @@
-import { DEPTH_1_WITH_AN_OBJECT_IN_ARRAY, DEPTH_1_WITH_ARRAY, DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY } from "./constants";
+import { DEPTH_1_WITH_AN_OBJECT_IN_ARRAY, DEPTH_1_WITH_ARRAY, DEPTH_1_WITH_MULTIPLE_OBJECTS_IN_ARRAY, DEPTH_4_WITH_ARRAYS } from "./constants";
 import { readFile } from "./lib/file";
 import { arrayToType, objectToType } from "./lib/parser";
 
@@ -10,9 +10,8 @@ const DEPTH_2 = './mocks/depth-2.json';
 function main() {
   (async () => {
     // const data = await readFile(DEPTH_2);
-    const data = { ...DEPTH_1_WITH_ARRAY, randomArray: [] }
-    console.log(data);
-    console.log(objectToType(data))
+    // console.log(DEPTH_4_WITH_ARRAYS);
+    console.log(objectToType(DEPTH_4_WITH_ARRAYS))
   })()
 }
 
