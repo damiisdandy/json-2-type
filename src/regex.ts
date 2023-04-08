@@ -1,5 +1,3 @@
-import { ARRAY_TYPE_PREFIX } from "./constants";
-
 const numericalRegex = /^\d+$/;
 
 /**
